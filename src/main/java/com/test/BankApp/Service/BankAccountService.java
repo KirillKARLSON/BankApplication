@@ -3,10 +3,7 @@ package com.test.BankApp.Service;
 import com.test.BankApp.Exceptions.InsufficentFundsException;
 import com.test.BankApp.Exceptions.InvalidPinException;
 import com.test.BankApp.Exceptions.ResourceNotFoundException;
-import com.test.BankApp.Model.BankAccount;
-import com.test.BankApp.Model.BankAccountDTO;
-import com.test.BankApp.Model.BankAccountRepository;
-import com.test.BankApp.Model.TransactionDTO;
+import com.test.BankApp.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -15,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -67,6 +65,19 @@ public class BankAccountService {
 
     public Iterable<BankAccount> get() {
         return bankAccountRepository.findAll();
+    }
+
+    public List<BankAccountOpenInfoDTO> getAccountsOpenInfo(){
+        List<BankAccount> bankAccounts = bankAccountRepository.findAll();
+        List <BankAccountOpenInfoDTO> bankAccountOpenInfoDTOS = new ArrayList<>();
+        for(BankAccount bankAccount: bankAccounts){
+            BankAccountOpenInfoDTO bankAccountOpenInfoDTO = new BankAccountOpenInfoDTO();
+            bankAccountOpenInfoDTO.setName(bankAccount.getName());
+            bankAccountOpenInfoDTO.setAmount(bankAccount.getBalance());
+            bankAccountOpenInfoDTOS.add(bankAccountOpenInfoDTO);
+        }
+
+        return  bankAccountOpenInfoDTOS;
     }
 
 

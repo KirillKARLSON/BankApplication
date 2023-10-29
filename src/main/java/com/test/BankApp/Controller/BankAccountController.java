@@ -1,21 +1,14 @@
 package com.test.BankApp.Controller;
 
 
-import com.test.BankApp.Exceptions.InsufficentFundsException;
-import com.test.BankApp.Exceptions.InvalidPinException;
-import com.test.BankApp.Exceptions.ResourceNotFoundException;
-import com.test.BankApp.Model.BankAccount;
-import com.test.BankApp.Model.BankAccountDTO;
-import com.test.BankApp.Model.BankAccountRepository;
-import com.test.BankApp.Model.TransactionDTO;
+import com.test.BankApp.Model.*;
 import com.test.BankApp.Service.BankAccountService;
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
@@ -29,8 +22,8 @@ public class BankAccountController {
     }
 
     @GetMapping("/show")
-    public Iterable<BankAccount> getPhoto(){
-        return bankAccountService.get();
+    public List<BankAccountOpenInfoDTO> getBankAccount(){
+        return bankAccountService.getAccountsOpenInfo();
     }
 
     @PostMapping
@@ -40,16 +33,18 @@ public class BankAccountController {
     }
 
     @PutMapping("/{accountId}/deposit")
-    public ResponseEntity<BankAccount> deposit(@PathVariable Long accountId, @RequestBody TransactionDTO transactionDTO){
+    public ResponseEntity<BankAccountOpenInfoDTO> deposit(@PathVariable Long accountId, @RequestBody TransactionDTO transactionDTO){
        BankAccount account = bankAccountService.makeDeposit(accountId,transactionDTO.getAmount(),transactionDTO.getPin());
-       return ResponseEntity.ok(account);
+       BankAccountOpenInfoDTO accountOpenInfo = new BankAccountOpenInfoDTO(account.getName(), account.getBalance());
+       return ResponseEntity.ok(accountOpenInfo);
     }
 
 
     @PutMapping("/{accountId}/withdraw")
     public ResponseEntity<?> withdraw(@PathVariable Long accountId,@RequestBody TransactionDTO transactionDTO){
         BankAccount account = bankAccountService.makeWithdraw(accountId, transactionDTO.getAmount(), transactionDTO.getPin());
-        return ResponseEntity.ok(account);
+        BankAccountOpenInfoDTO accountOpenInfo = new BankAccountOpenInfoDTO(account.getName(), account.getBalance());
+        return ResponseEntity.ok(accountOpenInfo);
     }
 
     @PutMapping("/{sourceAccountId}/transfer/{destinationAccountId}")
