@@ -1,19 +1,22 @@
 package com.test.BankApp.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
+@Data
 @Entity
+@Table(name = "bank_account")
 public class BankAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column (name = "name")
     private String name;
+    @Column (name = "pin")
     private int pin;
+    @Column(name = "balance")
     private double balance;
 
 
